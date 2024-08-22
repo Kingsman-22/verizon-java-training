@@ -1,0 +1,92 @@
+SQL> create table Departments(DepartmentID NUMBER PRIMARY KEY, DepartmentName varchar2(50) UNIQUE NOT NULL, Location varchar2(50));
+
+Table created.
+
+SQL> create table Employees(EmployeeID NUMBER PRIMARY KEY, FirstName varchar(50), LastName varchar(50), DepartmentID NUMBER REFERENCES Departments(DepartmentID), HireDate Date, Salary NUMBER);
+
+Table created.
+
+SQL> insert into departments values(1, 'Human Resources', 'New York');
+
+1 row created.
+
+SQL> insert into departments values(2, 'Engineering', 'San Francisco');
+
+1 row created.
+
+SQL> insert into departments values(3, 'Marketing', 'Chicago');
+
+1 row created.
+
+SQL> insert into departments values(4, 'Sales', 'Miami');
+
+1 row created.
+
+SQL> insert into employees values (1, 'John', 'Doe', 2, '01-JAN-20', 85000);
+
+1 row created.
+
+SQL> insert into employees values (2, 'Jane', 'Smith', 1, '22-MAR-19', 60000);
+
+1 row created.
+
+SQL> insert into employees values (3, 'Michael', 'Brown', 3, '11-JUN-19', 75000);
+
+1 row created.
+
+SQL> insert into employees values (4, 'Emily', 'Davis', 4, '30-SEP-21', 72000);
+
+1 row created.
+
+SQL> insert into employees values (5, 'David', 'Wilson', 2, '05-NOV-20', 90000);
+
+1 row created.
+
+SQL> SELECT FirstName,LastName from Employees JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID AND DepartmentName = 'Engineering';
+
+FIRSTNAME
+--------------------------------------------------
+LASTNAME
+--------------------------------------------------
+John
+Doe
+
+David
+Wilson
+
+SQL> SELECT d.DepartmentName, COUNT(e.EmployeeID) AS NumberOfEmployees FROM Departments d LEFT JOIN Employees e ON d.DepartmentID = e.EmployeeID Group By d.DepartmentName ORDER BY d.DepartmentName;
+
+DEPARTMENTNAME                                     NUMBEROFEMPLOYEES
+-------------------------------------------------- -----------------
+Engineering                                                        1
+Human Resources                                                    1
+Marketing                                                          1
+Sales                                                              1
+
+SQL> SELECT SUM(Salary) from Employees JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID where DepartmentName = 'Marketing';
+
+SUM(SALARY)
+-----------
+      75000
+
+SQL> update employees set salary=88000 where EmployeeID=1;
+
+1 row updated.
+
+SQL> update employees set DepartmentID = (select DepartmentID from Departments where DepartmentName = 'Sales') where EmployeeID = 3;
+
+1 row updated.
+
+SQL> delete from Employees where EmployeeID=5;
+
+1 row deleted.
+
+SQL> delete from Employees where DepartmentID = (select DepartmentID from Departments where DepartmentName='Human Resources');
+
+1 row deleted.
+
+SQL> delete from Departments where DepartmentName='Human Resources';
+
+1 row deleted.
+
+
